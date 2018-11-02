@@ -52,7 +52,7 @@ def get_configuration(section, description = ''):
     config[section].update({ k:v for k, v in opt_dict.items() if k in config[section]})
     
     filepaths = get_file_paths(config['input'])
-    return config[section], filepaths
+    return filepaths, config[section]
 
 def get_file_paths(config):
     main_dir = "data"
