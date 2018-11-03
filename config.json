@@ -13,7 +13,7 @@
 	},
 	
 	"train" : {
-		"model" : "show_attend_tell",
+		"model" : "show_tell",
 		"hidden_size" : 512,
 		"alpha_c" : 1.0,
 	    "optimizer" : "SGD",
@@ -24,7 +24,10 @@
 		"dl_params_val" : {"batch_size" : 2048, "shuffle" : false},
 		"clip" : 5,
         "lr_decay" : [15,20,25,30],
-        "max_length" : 30
+        "max_length" : 30,
+        "encoding_size" : 512,
+        "encoding_size" : 2048,
+        "dropout" : 0.3
 	},
 	
 	"predict" : {

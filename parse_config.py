@@ -69,6 +69,12 @@ def get_file_paths(config):
     fpaths_captions_train = glob.glob(fpattern_captions_train)
     fpaths_captions_val = glob.glob(fpattern_captions_val)
     fpaths_captions_test = glob.glob(fpattern_captions_test)
+    fpath_im_features_train = os.path.join(
+        input_dir, config['fname_image_features_train'])
+    fpath_im_features_val = os.path.join(
+        input_dir, config['fname_image_features_val'])
+    fpath_im_features_test = os.path.join(
+        input_dir, config['fname_image_features_test'])
 
     # preprocess
     to_vector_path = lambda fp: f"{fp.replace('input', 'preprocess')}.pt"
@@ -78,12 +84,6 @@ def get_file_paths(config):
     fpath_vocab = os.path.join(preprocess_dir, 'vocab.pt')
         
     # train
-    fpath_im_features_train = os.path.join(
-        preprocess_dir, config['fname_image_features_train'])
-    fpath_im_features_val = os.path.join(
-        preprocess_dir, config['fname_image_features_val'])
-    fpath_im_features_test = os.path.join(
-        preprocess_dir, config['fname_image_features_test'])
     fpath_losses = os.path.join(train_dir, 'losses.pt')
     fpath_bleu_scores = os.path.join(train_dir, 'bleu_scores.pt')
     fpath_model = os.path.join(train_dir, f'model.%d.pt')
