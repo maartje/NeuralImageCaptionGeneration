@@ -7,14 +7,14 @@ class ModelSaver():
         self.metrics_collector = metrics_collector
         self.fpath_model = fpath_model
         
-    def save_best_model(self, _, __):
+    def save_best_model(self, _ = None, __ = None):
         """
-        Saves model with lowest validation loss. 
+        Saves model with best BLUE score on validation set. 
         Call this function after 'metricCollector.store_val_metrics'.
         """
-        min_val_loss = min(self.metrics_collector.val_losses) 
-        last_val_loss = self.metrics_collector.val_losses[-1]
-        if last_val_loss == min_val_loss:
+        max_val_blue = max(self.metrics_collector.val_blue_scores) 
+        last_val_blue = self.metrics_collector.val_blue_scores[-1]
+        if last_val_blue == max_val_blue:
             torch.save(self.model, self.fpath_model)
             print (f"best model so far saved")
         else:

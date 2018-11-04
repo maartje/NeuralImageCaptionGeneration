@@ -2,17 +2,17 @@ import numpy as np
 import torch
 
 from models.train_predict import calculate_batch_loss
-#from src.nn.train import predict
-#from src.reporting.metrics import *
 
 class MetricsCollector(object):
 
-    def __init__(self, model, val_data, max_length, loss_criterion, device):
+    def __init__(self, model, val_data, max_length, loss_criterion, 
+                 blue_calculator, device):
         self.model = model
         self.val_data = val_data
         self.loss_criterion = loss_criterion
         self.max_length = max_length
         self.device = device
+        self.blue_calculator = blue_calculator
 
         self.train_losses = []
         self.val_losses = [] 
@@ -21,7 +21,7 @@ class MetricsCollector(object):
     def store_val_metrics(self, epoch = None, _= None):
         # store metrics on validation set
         val_loss = self.calculate_val_loss()
-        val_blue = -1.0
+        val_blue = self.blue_calculator.calculate_blue()
         self.val_losses.append(val_loss)
         self.val_blue_scores.append(val_blue)
 
@@ -47,4 +47,3 @@ class MetricsCollector(object):
                 batch_losses.append(loss.item())
         return np.mean(batch_losses)
         
-

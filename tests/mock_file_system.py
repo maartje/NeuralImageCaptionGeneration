@@ -38,7 +38,6 @@ class MockFileSystem:
             ]
         }
         self.mocked_file_storage['data/input/flickr30k_train_resnet50_cnn_features.hdf5'] = self.generate_random_encodings(encoding_size, 5)
-        self.mocked_file_storage['data/input/flickr30k_valid_resnet50_cnn_features.hdf5'] = self.generate_random_encodings(encoding_size, 3)
         self.mocked_file_storage['data/input/flickr30k_test_resnet50_cnn_features.hdf5'] = self.generate_random_encodings(encoding_size, 3)
 
         self.test_config = {
@@ -77,6 +76,11 @@ class MockFileSystem:
         self.filepaths['caption_vectors_train'] = [
             'data/preprocess/train.1.en.pt', 'data/preprocess/train.2.en.pt'
         ]
+
+        # REMARK: for testing we take or train set as our validation set
+        # to make sure that val losses go down, and val BLEU go up
+        self.filepaths['captions_val'] = self.filepaths['captions_train']
+        self.mocked_file_storage['data/input/flickr30k_valid_resnet50_cnn_features.hdf5'] = self.mocked_file_storage['data/input/flickr30k_train_resnet50_cnn_features.hdf5']
 
     def generate_random_encodings(self, encoding_size, n):
         rgen = lambda : 2*np.random.rand(encoding_size)#.view(1,-1)\\\
