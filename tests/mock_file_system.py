@@ -37,7 +37,7 @@ class MockFileSystem:
                 'A cloudy sky.'
             ]
         }
-        self.mocked_file_storage['data/input/flickr30k_train_resnet50_cnn_features.hdf5'] = self.generate_random_encodings(encoding_size, 6)
+        self.mocked_file_storage['data/input/flickr30k_train_resnet50_cnn_features.hdf5'] = self.generate_random_encodings(encoding_size, 5)
         self.mocked_file_storage['data/input/flickr30k_valid_resnet50_cnn_features.hdf5'] = self.generate_random_encodings(encoding_size, 3)
         self.mocked_file_storage['data/input/flickr30k_test_resnet50_cnn_features.hdf5'] = self.generate_random_encodings(encoding_size, 3)
 
@@ -59,12 +59,16 @@ class MockFileSystem:
 		        "hidden_size" : 512,
 	            "optimizer" : "SGD",
 		        "learning_rate" : 1.0,
-		        "epochs" : 2,
+		        "epochs" : 10,
 		        "dl_params_train" : {"batch_size" : 2, "shuffle" : True},
 		        "dl_params_val" : {"batch_size" : 2, "shuffle" : False},
                 "dropout" : 0.3,
                 "max_length" : 30
-	        }
+	        },
+	        "predict" : {
+                "max_length" : 10,
+                "dl_params" : {"batch_size" : 3}
+            }
         }
         self.filepaths = get_file_paths(self.test_config['input'])
         self.filepaths['captions_train'] = [
@@ -75,7 +79,7 @@ class MockFileSystem:
         ]
 
     def generate_random_encodings(self, encoding_size, n):
-        rgen = lambda : 2*np.random.rand(encoding_size)#.view(1,-1)
+        rgen = lambda : 2*np.random.rand(encoding_size)#.view(1,-1)\\\
         return [rgen() for _ in range(n)]
 
     def mock_load(self, fpath):

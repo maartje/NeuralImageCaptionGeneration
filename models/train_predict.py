@@ -27,19 +27,41 @@ def fit(model, train_data, loss_criterion, optimizer,
         for fn_on_epoch_completed in fn_epoch_listeners:
             fn_on_epoch_completed(epoch, batch_losses)
 
-def predict(model, test_data, max_length, model_name='rnn', device=torch.device('cpu')):
+def predict(model, test_data, SOS_index, max_length, device):
     """ Predicts the probabilities of the target classes.
     
     Args:
-        model: Language Identification Model
-        test_data: iterator over batches of testdata
+        model: Image Caption Generation Model
+        test_data: iterator over batches of image features
+        SOS_index: index of start token
+        max_length: max length of generated sentence
+        device: CPU or GPU device 
 
     Returns:
-        log probabilities [BatchSize x Max-SequenceLength x NrOfTargetClasses]
-        targets [BatchSize x Max-SequenceLength] (0 is used for padding)
-        lengths [BatchSize]
+        list of predicted index vectors representing sentences
     """
-    model.eval() # set in predict mode
+    results = []
+    model.to(device)
+    model.eval()
+    with torch.no_grad():
+        for batch in test_data:
+            image_features = batch.to(device)
+            predicted_tokens = []
+            batch_size = image_features.size()[0]
+            image_features = image_features
+            inputs = torch.LongTensor([[SOS_index]]*batch_size)
+            lengths = torch.ones([batch_size], dtype=torch.long)
+            hidden = None
+            inputs = inputs.to(device)
+            lengths = lengths.to(device)
+            for i in range(max_length):
+                output, hidden, *_ = model(image_features, inputs, lengths, hidden)
+                _, topi = output.topk(1)
+                predicted_tokens.append(topi.squeeze(1))
+                inputs = topi.squeeze(1)
+            result = torch.cat(predicted_tokens, 1)
+            results.append(result)
+        return torch.cat(results).tolist()
 
 
 def calculate_batch_loss(model, batch, loss_criterion, device, alpha_c = None):
