@@ -21,7 +21,7 @@ class MetricsCollector(object):
     def store_val_metrics(self, epoch = None, _= None):
         # store metrics on validation set
         val_loss = self.calculate_val_loss()
-        val_blue = -2
+        val_blue = -1.0
         self.val_losses.append(val_loss)
         self.val_blue_scores.append(val_blue)
 

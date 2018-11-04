@@ -26,7 +26,6 @@ def fit(model, train_data, loss_criterion, optimizer,
         
         for fn_on_epoch_completed in fn_epoch_listeners:
             fn_on_epoch_completed(epoch, batch_losses)
-        print(sum(batch_losses))            
 
 def predict(model, test_data, max_length, model_name='rnn', device=torch.device('cpu')):
     """ Predicts the probabilities of the target classes.

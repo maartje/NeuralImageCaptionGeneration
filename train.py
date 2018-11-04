@@ -3,6 +3,8 @@ from models.show_tell import ShowTell
 from models.image_captions_dataset import ImageCaptionsDataset, collate_image_captions
 from models.train_predict import fit
 from evaluation.metrics_collector import MetricsCollector
+from evaluation.train_output_writer import TrainOutputWriter
+from evaluation.model_saver import ModelSaver
 
 from torch.utils import data
 import torch
@@ -28,20 +30,26 @@ def train(filepaths, config):
         model, dl_val, config['max_length'], loss_criterion, device
     )
     metrics_collector.store_val_metrics() # store initial validation loss and BLUE
-     
+    trainOutputWriter = TrainOutputWriter(metrics_collector)
+    modelSaver = ModelSaver(model, metrics_collector, filepaths['model'])
     fn_epoch_listeners = [
         metrics_collector.store_train_loss,
         metrics_collector.store_val_metrics,
+        trainOutputWriter.print_epoch_info,
+        modelSaver.save_best_model
     ]
     
     fit(model, dl_train, loss_criterion, optimizer, 
         config['epochs'], device,
         fn_epoch_listeners, config.get('alpha_c'))
-        
-    print('END')
-    print(metrics_collector.train_losses)
-    print(metrics_collector.val_losses)
-    print(metrics_collector.val_blue_scores)
+            
+    # save metrics collected during training
+    torch.save({
+        'train_losses': metrics_collector.train_losses,
+        'val_losses': metrics_collector.val_losses,
+        'val_blue_scores': metrics_collector.val_blue_scores
+    }, filepaths['epoch_metrics'])
+
 
 
 def configure_optimizer(config, model):

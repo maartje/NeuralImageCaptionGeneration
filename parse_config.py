@@ -84,10 +84,8 @@ def get_file_paths(config):
     fpath_vocab = os.path.join(preprocess_dir, 'vocab.pt')
         
     # train
-    fpath_losses = os.path.join(train_dir, 'losses.pt')
-    fpath_bleu_scores = os.path.join(train_dir, 'bleu_scores.pt')
-    fpath_model = os.path.join(train_dir, f'model.%d.pt')
-    fpath_best_model = os.path.join(train_dir, f'model_best.pt')
+    fpath_epoch_metrics = os.path.join(train_dir, 'epoch_metrics.pt')
+    fpath_model = os.path.join(train_dir, f'model.pt')
 
     # predict
     fpath_predictions_val = os.path.join(predict_dir, 'predictions_val.txt')
@@ -119,10 +117,8 @@ def get_file_paths(config):
         'caption_vectors_test' : fpaths_caption_vectors_test,
         
         # train
-        'losses' : fpath_losses,
-        'bleu_scores' : fpath_bleu_scores,
+        'epoch_metrics' : fpath_epoch_metrics,
         'model' : fpath_model,
-        'best_model' : fpath_best_model,
         
         # predict
         'predictions_test' : fpath_predictions_test,
