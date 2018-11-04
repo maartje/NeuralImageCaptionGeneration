@@ -24,8 +24,8 @@ def build_and_save_vocabulary(filepaths, config, start_time):
 def build_and_save_caption_vectors(filepaths, mapper, start_time):
     duration_str = format_duration(start_time, datetime.now())
     print(f'\n({duration_str}) Start building index vectors from descriptions ...')
-    fpaths = filepaths['captions_train'] #+ filepaths['captions_val'] + filepaths['captions_test']
-    fpaths_out = filepaths['caption_vectors_train'] #+ filepaths['caption_vectors_val'] + filepaths['caption_vectors_test']
+    fpaths = filepaths['captions_train'] + filepaths['captions_val'] + filepaths['captions_test']
+    fpaths_out = filepaths['caption_vectors_train'] + filepaths['caption_vectors_val'] + filepaths['caption_vectors_test']
     for (fpath, fpath_out) in zip(fpaths, fpaths_out):
         sentence_vectors = [mapper.sentence2indices(sentence) for sentence in read_lines(fpath)]
         torch.save(sentence_vectors, fpath_out)

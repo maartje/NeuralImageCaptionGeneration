@@ -18,7 +18,7 @@
 		"alpha_c" : 1.0,
 	    "optimizer" : "SGD",
 		"learning_rate" : 1.0,
-		"max_epochs" : 20,
+		"epochs" : 10,
 		"max_hours" : 3,
 		"dl_params_train" : {"batch_size" : 128, "shuffle" : true},
 		"dl_params_val" : {"batch_size" : 2048, "shuffle" : false},

@@ -5,7 +5,7 @@ import tables
 import numpy as np
 from torch.utils import data
 
-from persistence.image_captions_dataset import ImageCaptionsDataset, collate_image_captions
+from models.image_captions_dataset import ImageCaptionsDataset, collate_image_captions
 
 class TestImageCaptionsDataset(unittest.TestCase):
     mfs = MockFileSystem(64)

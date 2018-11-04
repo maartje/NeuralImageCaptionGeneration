@@ -46,15 +46,23 @@ class MockFileSystem:
 		        "fpattern_captions_train": "train.1.en",
 		        "fpattern_captions_val": "val.1.en",
 		        "fpattern_captions_test": "test.1.en",
-		        "fname_image_features_train" : "flickr30k_train_resnet50_cnn_features.hdf5",
-		        "fname_image_features_val" : "flickr30k_valid_resnet50_cnn_features.hdf5",
+		        "fname_image_features_train": "flickr30k_train_resnet50_cnn_features.hdf5",
+		        "fname_image_features_val"  : "flickr30k_valid_resnet50_cnn_features.hdf5",
 		        "fname_image_features_test" : "flickr30k_test_resnet50_cnn_features.hdf5"
             },
 	        "preprocess" : {
 		        "min_occurences" : 1 # do not filter rare words
 	        },
 	        "train" : {
-	            "encoding_size" : encoding_size
+	            "encoding_size" : encoding_size,
+		        "model" : "show_tell",
+		        "hidden_size" : 512,
+	            "optimizer" : "SGD",
+		        "learning_rate" : 1.0,
+		        "epochs" : 2,
+		        "dl_params_train" : {"batch_size" : 2, "shuffle" : True},
+		        "dl_params_val" : {"batch_size" : 2, "shuffle" : False},
+                "dropout" : 0.3
 	        }
         }
         self.filepaths = get_file_paths(self.test_config['input'])
