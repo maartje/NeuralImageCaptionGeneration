@@ -2,6 +2,7 @@ from parse_config import get_configuration
 from models.show_tell import ShowTell
 from models.image_captions_dataset import ImageCaptionsDataset, collate_image_captions
 from models.train_predict import fit
+from evaluation.metrics_collector import MetricsCollector
 
 from torch.utils import data
 import torch
@@ -23,10 +24,24 @@ def train(filepaths, config):
     if config.get('clip'):
         clip_grad_norm_(model.parameters(), config['clip'])
     
-    fn_epoch_listeners = []
+    metrics_collector = MetricsCollector(
+        model, dl_val, config['max_length'], loss_criterion, device
+    )
+    metrics_collector.store_val_metrics() # store initial validation loss and BLUE
+     
+    fn_epoch_listeners = [
+        metrics_collector.store_train_loss,
+        metrics_collector.store_val_metrics,
+    ]
+    
     fit(model, dl_train, loss_criterion, optimizer, 
         config['epochs'], device,
         fn_epoch_listeners, config.get('alpha_c'))
+        
+    print('END')
+    print(metrics_collector.train_losses)
+    print(metrics_collector.val_losses)
+    print(metrics_collector.val_blue_scores)
 
 
 def configure_optimizer(config, model):

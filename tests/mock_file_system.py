@@ -62,7 +62,8 @@ class MockFileSystem:
 		        "epochs" : 2,
 		        "dl_params_train" : {"batch_size" : 2, "shuffle" : True},
 		        "dl_params_val" : {"batch_size" : 2, "shuffle" : False},
-                "dropout" : 0.3
+                "dropout" : 0.3,
+                "max_length" : 30
 	        }
         }
         self.filepaths = get_file_paths(self.test_config['input'])

@@ -19,28 +19,14 @@ def fit(model, train_data, loss_criterion, optimizer,
         batch_losses = []
         for batch_index, batch in enumerate(train_data):
             optimizer.zero_grad()
-            (image_features, caption_inputs, caption_targets, caption_lengths) = batch
-            image_features = image_features.to(device) 
-            caption_inputs = caption_inputs.to(device)
-            caption_targets = caption_targets.to(device)
-            caption_lengths = caption_lengths.to(device)
-
-            output_probs, *k = model(
-                image_features, caption_inputs, caption_lengths
-            )    
-            loss = loss_criterion(output_probs.permute(0, 2, 1), caption_targets)
-            if len(k) > 1: # HACK
-                # Add doubly stochastic attention regularization for show_attend_tell
-                alphas = k[1]
-                loss += alpha_c * ((1. - alphas.sum(dim=1)) ** 2).mean()
+            loss = calculate_batch_loss(model, batch, loss_criterion, device, alpha_c)
             loss.backward()
             optimizer.step()
             batch_losses.append(loss.item())
         
         for fn_on_epoch_completed in fn_epoch_listeners:
             fn_on_epoch_completed(epoch, batch_losses)
-        print(sum(batch_losses))
-            
+        print(sum(batch_losses))            
 
 def predict(model, test_data, max_length, model_name='rnn', device=torch.device('cpu')):
     """ Predicts the probabilities of the target classes.
@@ -55,4 +41,22 @@ def predict(model, test_data, max_length, model_name='rnn', device=torch.device(
         lengths [BatchSize]
     """
     model.eval() # set in predict mode
+
+
+def calculate_batch_loss(model, batch, loss_criterion, device, alpha_c = None):
+    (image_features, caption_inputs, caption_targets, caption_lengths) = batch
+    image_features = image_features.to(device) 
+    caption_inputs = caption_inputs.to(device)
+    caption_targets = caption_targets.to(device)
+    caption_lengths = caption_lengths.to(device)
+
+    output_probs, *k = model(
+        image_features, caption_inputs, caption_lengths
+    )    
+    loss = loss_criterion(output_probs.permute(0, 2, 1), caption_targets)
+    if alpha_c and (len(k) > 1): # HACK
+        # Add doubly stochastic attention regularization for show_attend_tell
+        alphas = k[1]
+        loss += alpha_c * ((1. - alphas.sum(dim=1)) ** 2).mean()
+    return loss
 

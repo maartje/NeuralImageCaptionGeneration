@@ -14,7 +14,7 @@ class TestPipeline(unittest.TestCase):
     def setUp(self):
         warnings.simplefilter("ignore")
 
-    @mock.patch('builtins.print')
+    #@mock.patch('builtins.print')
     @mock.patch('preprocess.read_lines', side_effect = mfs.mock_load)
     @mock.patch('torch.load', side_effect = mfs.mock_load)
     @mock.patch('torch.save', side_effect = mfs.mock_save)
