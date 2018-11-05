@@ -3,7 +3,7 @@ Generates image captions using an encoder/decoder neural net with or without att
 The implementation loosely follows the ideas described in the papers [1] and 
 [2].
 
-[1] Show and Tell: A Neural Image Caption Generator (Vinyals et al.)
+[1] Show and Tell: A Neural Image Caption Generator (Vinyals et al.) <br>
 [2] Show, Attend and Tell: Neural Image Caption Generation with Visual Attention (Xu et al.)
 
 # Getting started
