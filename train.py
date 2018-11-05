@@ -122,7 +122,7 @@ def update_config(filepaths, config, text_mapper):
 def main():
     filepaths, config = get_configuration(
         'train', 
-        description = 'Train model for generating image descriptions.')
+        description = 'Trains a model for generating image descriptions.')
     train(filepaths, config)
 
 

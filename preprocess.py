@@ -45,7 +45,7 @@ def read_lines(fpath):
             yield line.strip()
 
 def main():
-    description = 'Generate vocabulary and indices vectors for captions'
+    description = 'Generates vocabulary and indices vectors for captions'
     filepaths, config = get_configuration('preprocess', description = description)
     preprocess(filepaths, config)
 

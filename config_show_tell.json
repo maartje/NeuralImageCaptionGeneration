@@ -1,10 +1,10 @@
 {
     "input" : {
-		"fpattern_captions_train": "test_2016.[0-9].en",
+		"fpattern_captions_train": "train.[0-9].en",
 		"fpattern_captions_val": "val.[0-9].en",
-		"fpattern_captions_test": "test_2016.[0-9].en",
-		"fname_image_features_train" : "flickr30k_test_resnet50_cnn_features.hdf5",
-		"fname_image_features_val" : "flickr30k_valid_resnet50_cnn_features.hdf5",
+		"fpattern_captions_test": "test.[0-9].en",
+		"fname_image_features_train" : "flickr30k_train_resnet50_cnn_features.hdf5",
+		"fname_image_features_val" : "flickr30k_val_resnet50_cnn_features.hdf5",
 		"fname_image_features_test" : "flickr30k_test_resnet50_cnn_features.hdf5"
     },
     
@@ -13,26 +13,21 @@
 	},
 	
 	"train" : {
-		"model" : "show_attend_tell",
+		"model" : "show_tell",
 		"hidden_size" : 512,
-		"alpha_c" : 1.0,
 	    "optimizer" : "SGD",
 		"learning_rate" : 1.0,
-		"max_epochs" : 20,
-		"max_hours" : 3,
+		"epochs" : 25,
 		"dl_params_train" : {"batch_size" : 128, "shuffle" : true},
 		"dl_params_val" : {"batch_size" : 2048, "shuffle" : false},
 		"clip" : 5,
-        "lr_decay" : [15,20,25,30],
-        "max_length" : 30
+        "max_length" : 30,
+        "encoding_size" : 2048,
+        "dropout" : 0.3
 	},
 	
 	"predict" : {
         "max_length" : 30,
         "dl_params" : {"batch_size" : 2048}
-    },
-
-
-	"evaluate" : {
     }
 }

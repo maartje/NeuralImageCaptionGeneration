@@ -1,5 +1,6 @@
 from evaluation.plots import plot_epoch_losses, plot_epoch_blue_scores
 import evaluation.blue_calculator as blue
+from parse_config import get_configuration
 
 import torch
 
@@ -36,7 +37,7 @@ def calculate_blue(filepaths):
 def main():
     filepaths, _ = get_configuration(
         'evaluate', 
-        description = 'Generate image captions.')
+        description = 'Generates captions for images.')
     evaluate(filepaths)
 
 if __name__ == "__main__":

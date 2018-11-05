@@ -15,27 +15,34 @@ def options(parser, section):
     parser.add_argument(
         '--config', 
         help = "Path to config file in JSON format",
-        default = 'config.json')
+        default = 'config_show_tell.json')
     if section == 'preprocess':
         parser.add_argument(
             '--min_occurences', 
             type = float,
-            help = "Overwrites the config setting for the minimum occurrence of a word to be included in the vocabulary")
+            help = "Sets the minimum occurrence of a word to be included in the vocabulary")
     if section == 'train':
         parser.add_argument(
             '--learning_rate', 
             type = float,
-            help = "Overwrites the config setting for the learning rate")
+            help = "Sets the learning rate")
         parser.add_argument(
             '--optimizer', 
-            help = "Overwrites the config setting for the optimizer")
+            help = "Sets the optimizer (SGD or ADAM)")
         parser.add_argument(
             '--model', 
-            help = "Overwrites the config setting for the model type, i.e. 'show_tell', 'show_attend_tell'.")
+            help = "Sets the model: 'show_tell' or 'show_attend_tell'")
         parser.add_argument(
             '--alpha_c', 
             type = float,
-            help = "Overwrites the config setting for the alpha regulizer in the 'show_attend_tell' model")
+            help = "Sets the alpha regulizer in the 'show_attend_tell' model (use a value between 0 and 1)")
+    if section == 'predict':
+        parser.add_argument(
+            '-i', 
+            help = "Path to input directory with image data")
+        parser.add_argument(
+            '-o', 
+            help = "Path to generated output file to store predicted captions")
         
 def load_config(fpath_config):
     with open(fpath_config) as f:
