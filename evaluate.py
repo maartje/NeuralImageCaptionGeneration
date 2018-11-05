@@ -37,7 +37,7 @@ def calculate_blue(filepaths):
 def main():
     filepaths, _ = get_configuration(
         'evaluate', 
-        description = 'Generates captions for images.')
+        description = 'Generates plots for train loss, validation loss and validation BLUE scores collected during training. Calculates the BLEU score on the test data using the trained model.')
     evaluate(filepaths)
 
 if __name__ == "__main__":

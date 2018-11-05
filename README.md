@@ -1,6 +1,10 @@
 # Image Caption Generation
 Generates image captions using an encoder/decoder neural net with or without attention.
+The implementation loosely follows the ideas described in the papers [1] and 
+[2].
 
+[1] Show and Tell: A Neural Image Caption Generator (Vinyals et al.)
+[2] Show, Attend and Tell: Neural Image Caption Generation with Visual Attention (Xu et al.)
 
 # Getting started
 
@@ -20,7 +24,7 @@ $ ./prepare.sh
 
 Copy the train, validation and test files to the directory 
 'data/input' following the filepaths as given in 'config\_show\_tell.json'. 
-We used the flickr30k dataset for this project.
+We used the [Flickr30k](http://web.engr.illinois.edu/~bplumme2/Flickr30kEntities/) dataset for this project.
 
 
 # Runing the tests
@@ -41,16 +45,16 @@ $ python predict.py
 $ python evaluate.py
 ```
 
-The settings of a run can be configured by adapting the file 'config\_show\_tell.py' (or 'config\_show\_attend\_tell.py'). In addition, the most important settings can be passed as command-line arguments.
+The settings of a run can be configured by adapting the file 'config\_show\_tell.py' (or 'config\_show\_attend\_tell.py'). Some settings in the config file can be overwritten by passing them as command-line arguments.
 
-
-** Results**
-Running the 'show\_tell' model with the default settings on a GPU for 25 epochs took about 2 hours on the Flickr30k dataset containing 30.000 images. We achieved a BLEU-1 score of 55 on a scale of 0 to 100. Running the show\_attend\_tell model with the default setting on a GPU took about 5 hours for 25 epochs. We achieved a BLEU-1 score of 57.
+**Results**
+Running the 'Show\_Tell' model with the default settings on a GPU for 25 epochs took about 2 hours on the Flickr30k dataset containing 30.000 images. We achieved a BLEU-1 score of 55 on a scale of 0 to 100. Running the 'Show\_Attend\_Tell model' with the default settings on a GPU took about 5 hours for 25 epochs. We achieved a BLEU-1 score of 57.
 
 Below we describe the subsequent steps in more detail.
 
 # Explanation Steps
 
+In all steps described below, use '--config config\_show\_tell.json' to use the ShowTell model [1] and use '--config config\_show\_attend\_tell.json' to use the ShowAttendTell model [2].
 
 ```console
 $ python preprocess.py 
@@ -67,13 +71,41 @@ optional arguments:
 
 ```console
 $ python train.py
+
+Trains a model for generating image descriptions.
+
+optional arguments:
+  --config CONFIG       Path to config file in JSON format 
+  --learning_rate LEARNING_RATE
+                        Sets the learning rate
+  --optimizer OPTIMIZER
+                        Sets the optimizer (SGD or ADAM) 
+  --model MODEL         Sets the model: 'show_tell' or 'show_attend_tell'
+  --alpha_c ALPHA_C     Sets the alpha regulizer in the 'show_attend_tell'
+                        model. Use a value between 0 and 1.
 ```
+
 ```console
 $ python predict.py
+
+Generate image captions.
+
+optional arguments:
+  --config CONFIG  Path to config file in JSON format
+  -i I             Path to input directory with image data
+  -o O             Path to output file storing the generated captions
+
 ```
 
 ```console
 $ python evaluate.py
+
+Generates plots for train loss, validation loss and validation BLUE scores
+collected during training. Calculates the BLEU score on the test data using
+the trained model.
+
+optional arguments:
+  --config CONFIG  Path to config file in JSON format 
 ```
 
 # Summary Project Proposal

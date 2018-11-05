@@ -42,7 +42,7 @@ def options(parser, section):
             help = "Path to input directory with image data")
         parser.add_argument(
             '-o', 
-            help = "Path to generated output file to store predicted captions")
+            help = "Path to output file storing the generated captions")
         
 def load_config(fpath_config):
     with open(fpath_config) as f:
