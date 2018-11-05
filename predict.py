@@ -52,7 +52,7 @@ def write_lines(lines, fpath):
 def main():
     filepaths, config = get_configuration(
         'predict', 
-        description = 'Train model for generating image descriptions.')
+        description = 'Generate image captions.')
     generate_predictions(filepaths, config)
 
 

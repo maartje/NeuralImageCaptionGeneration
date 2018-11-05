@@ -94,7 +94,6 @@ def get_file_paths(config):
     
     # evaluate
     fpath_plot_epoch_loss = os.path.join(evaluate_dir, 'epoch_losses.png')
-    fpath_plot_batch_loss = os.path.join(evaluate_dir, 'batch_losses.png')
     fpath_plot_bleu = os.path.join(evaluate_dir, 'epoch_BLEU.png')
     fpath_bleu_val = os.path.join(evaluate_dir, 'BLEU_val.txt')
     fpath_bleu_test = os.path.join(evaluate_dir, 'BLEU_test.txt')
@@ -127,8 +126,7 @@ def get_file_paths(config):
         
         # evaluate
         'plot_epoch_loss' : fpath_plot_epoch_loss,
-        'plot_batch_loss' : fpath_plot_batch_loss,
-        'plot_bleu' : fpath_plot_bleu,
+        'plot_epoch_bleu' : fpath_plot_bleu,
         'bleu_val' : fpath_bleu_val,
         'bleu_test' : fpath_bleu_test,
         'bleu_train' : fpath_bleu_train,

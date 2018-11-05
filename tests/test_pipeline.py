@@ -6,8 +6,11 @@ import warnings
 from preprocess import preprocess
 from train import train
 from predict import generate_predictions
+from evaluate import evaluate
+
 import torch
 import numpy as np
+
 
 
 class TestPipeline(unittest.TestCase):
@@ -24,7 +27,11 @@ class TestPipeline(unittest.TestCase):
     @mock.patch('torch.load', side_effect = mfs.mock_load)
     @mock.patch('torch.save', side_effect = mfs.mock_save)
     @mock.patch('tables.open_file', side_effect = mfs.mock_tables_open_file)
-    def test_pipeline(self, tbl_open, save, load, read, write, prnt = None):
+    @mock.patch('matplotlib.pyplot.savefig')
+    @mock.patch('evaluation.blue_calculator.run_multi_bleu')
+    @mock.patch('evaluation.blue_calculator.run_multi_blue_compare_human_performance')
+    def test_pipeline(self, blue_human, blue, savefig, tbl_open, 
+                      save, load, read, write, prnt = None):
         config = TestPipeline.mfs.test_config
         filepaths = TestPipeline.mfs.filepaths
         fs = TestPipeline.mfs.mocked_file_storage
@@ -38,9 +45,9 @@ class TestPipeline(unittest.TestCase):
 
         # train: stores model and epoch metrics
         # SANITY CHECKS:
-        # - the train loss is expected to decreases with each epoch
+        # - the train loss is expected to decrease with each epoch (on average)
         # - the validation loss is expected to decrease during training
-        # - the validation BLUE score is expected to increase during training
+        # - the validation BLUE score is expected to be reasonably high on training data
         train(filepaths, config['train'])        
         metrics = fs[filepaths['epoch_metrics']]
         is_decreasing = lambda l: all(l[i] > l[i+3] for i in range(len(l)-3))
@@ -48,7 +55,7 @@ class TestPipeline(unittest.TestCase):
         self.assertTrue(filepaths['epoch_metrics'] in fs.keys())        
         self.assertTrue(is_decreasing(metrics['train_losses']))
         self.assertTrue(metrics['val_losses'][0] > np.mean(metrics['val_losses'][-3:]))
-        self.assertTrue(metrics['val_blue_scores'][0] <= np.mean(metrics['val_blue_scores'][-3:]))
+        self.assertTrue(max(metrics['val_blue_scores']) > 0.25)
         
         # predict: stores predicted sentences for test, validation and train datasets
         # SANITY CHECK:
@@ -63,7 +70,30 @@ class TestPipeline(unittest.TestCase):
             fs[filepaths['captions_train'][1]]
         )
         self.assertTrue(np.sum(overfits) > 1) # at least one exact reproduction 
-
+        
+        # evaluate:
+        # - saves a plot of epoch losses
+        # - saves a plot of epoch BLUE scores
+        # - generates BLUE scores for test, validation and train data
+        # - compares BLUE scores using the model, 
+        #   with BLUE scores comparing captions created by human 
+        evaluate(filepaths)
+        (fname_losses, ), _ =savefig.call_args_list[0]
+        (fname_blue, ), _ =savefig.call_args_list[1]
+        self.assertEqual(fname_losses, filepaths['plot_epoch_loss'])
+        self.assertEqual(fname_blue, filepaths['plot_epoch_bleu'])
+        blue_human.assert_called_with(
+            filepaths[f'captions_test'], 
+            filepaths[f'predictions_test'], 
+            filepaths[f'bleu_test']
+        )
+        blue.assert_called_with(
+            filepaths[f'captions_test'], 
+            filepaths[f'predictions_test'], 
+            filepaths[f'bleu_test']
+        )
+        
+        
 def detect_overfits(predictions, captions_1, captions_2):
     def prediction_quality(i):
         p = predictions[i] 
