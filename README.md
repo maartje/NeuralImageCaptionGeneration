@@ -36,7 +36,7 @@ $ python -m unittest discover -v
 
 # Running the project
 
-Run the following commands:
+Run the following commands in the given order:
 
 ```console
 $ python preprocess.py 
@@ -116,6 +116,4 @@ The attention mechanism implements the idea that words in the generated output s
 
 In this project we aim to make the distinction between different reasons to generate a word explicit in the model. That is, we will implement a binary switch mechanism that allows the decoder to decide whether or not to use the image when generating the next word. We will then extend the baseline models described in [1] and [2] with this decision mechanism. We will evaluate the resulting models by comparing them to their baseline version using standard metrics used in image description generation and machine translation (BLEU, ROUGE). In addition, we will perform some experiments with the aim to gain insight into the behavior of the decision mechanism, e.g. how often and for what type of words does the model use the image?
   
-[1] Show and Tell: A Neural Image Caption Generator (Vinyals et al.)
-[2] Show, Attend and Tell: Neural Image Caption Generation with Visual Attention (Xu et al.)
 
