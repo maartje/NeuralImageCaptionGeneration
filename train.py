@@ -1,5 +1,6 @@
 from parse_config import get_configuration
 from models.show_tell import ShowTell
+from models.show_attend_tell import ShowAttendTell
 from models.image_captions_dataset import ImageCaptionsDataset, collate_image_captions
 from models.image_features_dataset import ImageFeaturesDataset
 from models.train_predict import fit
@@ -104,7 +105,7 @@ def configure_model(filepaths, config):
             config['dropout']
         )
     if config['model'] == "show_attend_tell":
-        return DecoderWithAttention(
+        return ShowAttendTell(
             config['hidden_size'], 
             config['hidden_size'], 
             config['hidden_size'], 

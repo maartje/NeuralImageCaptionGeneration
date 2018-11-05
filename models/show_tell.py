@@ -42,12 +42,13 @@ class Decoder(nn.Module):
         return output, hidden
         
 class ShowTell(nn.Module):
-    def __init__(self, input_size, hidden_size, output_size, pad_index, drop_out = 0.3):
+    def __init__(self, input_size, hidden_size, output_size, pad_index, 
+                 drop_out = 0.3, device = None):
         super(ShowTell, self).__init__()
         self.encoder = Encoder(input_size, hidden_size, drop_out)
         self.decoder = Decoder(hidden_size, output_size, pad_index, drop_out)
     
-    def forward(self, im_features, input_data, seq_lengths, state = None):
+    def forward(self, im_features, input_data, seq_lengths, state = None, device=None):
         if state is None:
             state = self.encoder(im_features)
         return self.decoder(state, input_data, seq_lengths) 

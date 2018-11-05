@@ -14,14 +14,14 @@ import numpy as np
 
 
 class TestPipeline(unittest.TestCase):
-    mfs = MockFileSystem(64)
+    mfs = MockFileSystem(64, 'show_tell')
         
     def setUp(self):
         warnings.simplefilter("ignore")
         torch.manual_seed(42)
         np.random.seed(42)
 
-    #@mock.patch('builtins.print')
+    @mock.patch('builtins.print')
     @mock.patch('preprocess.read_lines', side_effect = mfs.mock_load)
     @mock.patch('predict.write_lines', side_effect = mfs.mock_save)
     @mock.patch('torch.load', side_effect = mfs.mock_load)
@@ -30,8 +30,28 @@ class TestPipeline(unittest.TestCase):
     @mock.patch('matplotlib.pyplot.savefig')
     @mock.patch('evaluation.blue_calculator.run_multi_bleu')
     @mock.patch('evaluation.blue_calculator.run_multi_blue_compare_human_performance')
-    def test_pipeline(self, blue_human, blue, savefig, tbl_open, 
+    def test_pipeline_show_tell(self, blue_human, blue, savefig, tbl_open, 
                       save, load, read, write, prnt = None):
+        TestPipeline.mfs.initialize_file_storage()
+        TestPipeline.mfs.update_config("show_tell")
+        self.run_and_check_pipeline(blue_human, blue, savefig)
+
+    @mock.patch('builtins.print')
+    @mock.patch('preprocess.read_lines', side_effect = mfs.mock_load)
+    @mock.patch('predict.write_lines', side_effect = mfs.mock_save)
+    @mock.patch('torch.load', side_effect = mfs.mock_load)
+    @mock.patch('torch.save', side_effect = mfs.mock_save)
+    @mock.patch('tables.open_file', side_effect = mfs.mock_tables_open_file)
+    @mock.patch('matplotlib.pyplot.savefig')
+    @mock.patch('evaluation.blue_calculator.run_multi_bleu')
+    @mock.patch('evaluation.blue_calculator.run_multi_blue_compare_human_performance')
+    def tets_pipeline_show_attend_tell(self, blue_human, blue, savefig, tbl_open, 
+                      save, load, read, write, prnt = None):
+        TestPipeline.mfs.initialize_file_storage()
+        TestPipeline.mfs.update_config("show_attend_tell")
+        self.run_and_check_pipeline(blue_human, blue, savefig)
+                      
+    def run_and_check_pipeline(self, blue_human, blue, savefig):  
         config = TestPipeline.mfs.test_config
         filepaths = TestPipeline.mfs.filepaths
         fs = TestPipeline.mfs.mocked_file_storage

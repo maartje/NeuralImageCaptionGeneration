@@ -72,7 +72,7 @@ def calculate_batch_loss(model, batch, loss_criterion, device, alpha_c = None):
     caption_lengths = caption_lengths.to(device)
 
     output_probs, *k = model(
-        image_features, caption_inputs, caption_lengths
+        image_features, caption_inputs, caption_lengths, device = device
     )    
     loss = loss_criterion(output_probs.permute(0, 2, 1), caption_targets)
     if alpha_c and (len(k) > 1): # HACK

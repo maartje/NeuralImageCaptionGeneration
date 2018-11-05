@@ -8,7 +8,7 @@ from torch.utils import data
 from models.image_captions_dataset import ImageCaptionsDataset, collate_image_captions
 
 class TestImageCaptionsDataset(unittest.TestCase):
-    mfs = MockFileSystem(64)
+    mfs = MockFileSystem(64, 'show_tell')
 
     @mock.patch('tables.open_file', side_effect = mfs.mock_tables_open_file)
     @mock.patch('torch.load', side_effect = mfs.mock_load)

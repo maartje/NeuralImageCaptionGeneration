@@ -9,36 +9,9 @@ class MockFileSystem:
         return [fpattern]
 
     @mock.patch('glob.glob', side_effect = mock_glob)
-    def __init__(self, encoding_size, global_feats = True):
+    def __init__(self, encoding_size, mname, gl):
         self.encoding_size = encoding_size
-        self.mocked_file_storage = {
-            'data/input/train.1.en' : [
-                'Two dogs playing with a ball.',
-                'A boy in black suit.',
-                'Two men walking through the garden in the sun.',
-                'Mountain covered with snow.',
-                'A man reading the news paper.',
-            ],
-            'data/input/train.2.en' : [
-                'Two dogs and a ball in the parc.',
-                'A boy standing on the street wearing a black suit.',
-                'A garden with two men smoking a sigarette.',
-                'Snow on mountain top.',
-                'A man reading a paper.',
-            ],
-            'data/input/val.1.en' : [
-                'A cat lying on the roof.',
-                'A man waiting at the station.',
-                'A woman in a red dress.'
-            ],
-            'data/input/test.1.en' : [
-                'A mouse eating cheese.',
-                'A green parc with a fauntain',
-                'A cloudy sky.'
-            ]
-        }
-        self.mocked_file_storage['data/input/flickr30k_train_resnet50_cnn_features.hdf5'] = self.generate_random_encodings(encoding_size, 5)
-        self.mocked_file_storage['data/input/flickr30k_test_resnet50_cnn_features.hdf5'] = self.generate_random_encodings(encoding_size, 3)
+        self.initialize_file_storage()
 
         self.test_config = {
             "input" : {
@@ -69,6 +42,8 @@ class MockFileSystem:
                 "dl_params" : {"batch_size" : 3}
             }
         }
+        self.update_config(mname)
+
         self.filepaths = get_file_paths(self.test_config['input'])
         self.filepaths['captions_train'] = [
             'data/input/train.1.en', 'data/input/train.2.en'
@@ -80,7 +55,51 @@ class MockFileSystem:
         # REMARK: for testing we take or train set as our validation set
         # to make sure that val losses go down, and val BLEU go up
         self.filepaths['captions_val'] = self.filepaths['captions_train']
+
+    def initialize_file_storage(self):
+        self.mocked_file_storage = {
+            'data/input/train.1.en' : [
+                'Two dogs playing with a ball.',
+                'A boy in black suit.',
+                'Two men walking through the garden in the sun.',
+                'Mountain covered with snow.',
+                'A man reading the news paper.',
+            ],
+            'data/input/train.2.en' : [
+                'Two dogs and a ball in the parc.',
+                'A boy standing on the street wearing a black suit.',
+                'A garden with two men smoking a sigarette.',
+                'Snow on mountain top.',
+                'A man reading a paper.',
+            ],
+            'data/input/val.1.en' : [
+                'A cat lying on the roof.',
+                'A man waiting at the station.',
+                'A woman in a red dress.'
+            ],
+            'data/input/test.1.en' : [
+                'A mouse eating cheese.',
+                'A green parc with a fauntain',
+                'A cloudy sky.'
+            ]
+        }
+        self.mocked_file_storage['data/input/flickr30k_train_resnet50_cnn_features.hdf5'] = self.generate_random_encodings(self.encoding_size, 5)
+        self.mocked_file_storage['data/input/flickr30k_test_resnet50_cnn_features.hdf5'] = self.generate_random_encodings(self.encoding_size, 3)
         self.mocked_file_storage['data/input/flickr30k_valid_resnet50_cnn_features.hdf5'] = self.mocked_file_storage['data/input/flickr30k_train_resnet50_cnn_features.hdf5']
+        
+    def update_config(self, mname):
+        self.test_config['train']['model'] = mname
+        if mname == 'show_attend_tell':
+            # ADAM works much better for the attention model
+            self.test_config['train'].update({
+	            "optimizer" : "ADAM",
+		        "learning_rate" : 0.005,
+            })
+        else:
+            self.test_config['train'].update({
+	            "optimizer" : "SGD",
+		        "learning_rate" : 1.0,
+            })
 
     def generate_random_encodings(self, encoding_size, n):
         rgen = lambda : 2*np.random.rand(encoding_size)#.view(1,-1)\\\
@@ -95,6 +114,7 @@ class MockFileSystem:
     def mock_tables_open_file(self, fpath, mode):
         result = mock.MagicMock()
         result.root.global_feats = self.mocked_file_storage[fpath]
+        result.root.local_feats = self.mocked_file_storage[fpath]
         return result
 
     def add_preprocess_results(self):
