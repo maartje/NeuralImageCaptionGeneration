@@ -29,7 +29,7 @@ We used the [Flickr30k](http://web.engr.illinois.edu/~bplumme2/Flickr30kEntities
 
 # Runing the tests
 
-The project includes _unit tests_ and one _integration test_ 'tests/test_pipeline.py'. The integration test runs the full project on a small in-memory mock dataset, mocking all file access with an in-memory dictionairy (see 'tests/mock_file_system.py').
+The project includes _unit tests_ and an _integration test_ 'tests/test_pipeline.py'. The integration test runs the full project on a small in-memory mock dataset, mocking all file access with an in-memory dictionairy (see 'tests/mock_file_system.py').
 
 ```console
 $ cd NeuralImageCaptionGeneration
